@@ -2,6 +2,9 @@
 from prettytable import PrettyTable 
 from random import randint
 
+# Почати відлік часу виконання програми:
+start = timeit.default_timer()
+
 # Оголошую змінні:
 a0, a1, a2, a3 = 6, 4, 2, 5
 n = 8 
@@ -64,6 +67,12 @@ def nearest_right(y, y0):
     return min(y, key=lambda x: abs(x-y0))
 nearest_y = nearest_right(y_opt_list,y0)
 
+# Закінчити відлік часу виконання програми:
+stop = timeit.default_timer()
+
+# Обчислюємо час виконання програми:
+time = (stop - start)
+
 # Вивід данних:
 print("y = " + str(a0) + " + " + str(a1) + "*x1 + "+ str(a2) + "*x2 + " + str(a3) + "*x3")
 num = [i for i in range(1,n+1)]
@@ -79,3 +88,4 @@ for i in range(len(num)):
 print(table)
 print(f"| Y(еталонне) = ", y0)
 print(f"| Y(оптимальне) = ", nearest_y)
+print(f"Час роботи програми = ", time, "sec")
