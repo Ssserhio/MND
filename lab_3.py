@@ -2,6 +2,7 @@ from prettytable import PrettyTable
 from random import randint
 import numpy as np
 import math, os, sys
+from scipy.stats import t
 
 n = 4
 m = 3
@@ -145,12 +146,12 @@ t1 = abs(sum(([av_y[i]*x0[i] for i in range(n)])))/(s_beta)
 t2 = abs(sum(([av_y[i]*x1[i] for i in range(n)])))/(s_beta)
 t3 = abs(sum(([av_y[i]*x2[i] for i in range(n)])))/(s_beta)
 t4 = abs(sum(([av_y[i]*x3[i] for i in range(n)])))/(s_beta)
-t = [t1, t2, t3, t4]
-T = 2.306
+T = [t1, t2, t3, t4]
+T_tabl = t.ppf(q = 0.975, df = 9)
 
 k = 0
 for i in range(n):
-    if t[i] < T:
+    if T[i] < T_tabl:
         b[i] = 0
         k += 1
 
@@ -230,8 +231,8 @@ print("Критерій Кохрена: Gr = " + str(round(Gp,3)))
 print(check2)
 
 # Критерій Стьюдента: 
-print("\nКритерій Стьюдента:\n t1 =", round(t[0],3), "\n t2 =", round(t[1],3), \
-    "\n t3 =", round(t[2],3), "\n t4 =", round(t[3],3))
+print("\nКритерій Стьюдента:\n t1 =", round(T[0],3), "\n t2 =", round(T[1],3), \
+    "\n t3 =", round(T[2],3), "\n t4 =", round(T[3],3))
 print(deleted_koef)
 print(" y1 =", round(y_student[0],3), "\n y2 =", round(y_student[1],3), \
     "\n y3 =", round(y_student[2],3), "\n y4 =", round(y_student[3],3))
