@@ -32,7 +32,9 @@ class Experiment:
         self.average_x_max = round(np.average(self.x_max)) 
         self.y_min = 200 + self.average_x_min
         self.y_max = 200 + self.average_x_max
-
+        
+        # Рядок з важливими коефіцієнтами
+        self.important_koef = str()
 
         self.norm_x = [[1,1,1,1,1,1,1,1],
                 [-1,-1,1,1,-1,-1,1,1],
@@ -126,6 +128,10 @@ class Experiment:
         self.studentCriteriy(self.m, self.n, self.y, self.av_y, self.norm_xt, self.f3, self.q)
             
         self.fisherCriteriy(self.m, self.n, 1, self.f3, self.q, self.factors_xt, self.y, self.natural_bi, self.y_x)
+        
+        # Вівід на екран важливих коефіцієнтів, після всих обчислень.
+        print("\n---------------- Дод. завдання ----------------")
+        print(self.important_koef)
 
     def naturalizedB(self, n, x1, x2, x3, av_y):
 
@@ -197,6 +203,12 @@ class Experiment:
         index_list = [b[i] for i in index_list]
         deleted_koef = ', '.join(index_list) + " - коефіцієнти рівняння регресії приймаємо незначними, виключаємо їх з рівняння. "
         print(deleted_koef)
+        
+        # Обчислення важливих коефіцієнтів рівняння:
+        imp2 = [i if i < T_tabl else 0 for i in T]
+        index_list2 = [i for i, x in enumerate(imp2) if x == 0]
+        index_list2 = [b[i] for i in index_list2]
+        self.important_koef = ', '.join(index_list2) + " - значемі коефіцієнти рівняння регресії."
 
         self.y_x = [True if i > T_tabl else False for i in T]
         x_i = list(compress(["", "*x1", "*x2", "*x3", "*x12", "*x13", "*x23", "*x123"], self.y_x))
