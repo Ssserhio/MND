@@ -2,6 +2,7 @@ from sklearn import linear_model
 from functools import partial
 from scipy.stats import f, t
 import math, os, sys
+# З пакету pyDOE2 була використана функція ccdesign для отримання матриці ЦКП.
 from pyDOE2 import ccdesign
 import numpy as np
 import random
