@@ -278,9 +278,81 @@ class Experiment:
             print("\nКритерій Фішера: Fp = {}".format(self.F_practice))
             if self.fisher_test():
                 print("Рівняння регресії адекватне  оригіналу")
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                # Додаткове завдання:
+                self.Dop()
+                # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 self.Fisher = True
             else:
                 print("Рівняння регресії неадекватне  оригіналу\n\t Проводимо експеремент повторно")
+                
+    def Result_Without_Print(self, n, m, f1, f2, f3, q, matrix_x):
 
+        matrix_y = self.generate_matrix(matrix_x)
+        average_x = self.find_average(matrix_x, 0)
+        self.average_y = self.find_average(matrix_y, 1)
+        self.matrix = [(matrix_x[i] + matrix_y[i]) for i in range(n)]
+        mx_i = average_x
+        my = sum(self.average_y) / 15
+
+        dispersion_y = [0.0 for x in range(n)]
+        for i in range(n):
+            dispersion_i = 0
+            for j in range(m):
+                dispersion_i += (matrix_y[i][j] - self.average_y[i]) ** 2
+            dispersion_y.append(dispersion_i / (m - 1))
+
+        def a(first, second):
+            need_a = 0
+            for j in range(n):
+                need_a += matrix_x[j][first - 1] * matrix_x[j][second - 1] / n
+            return need_a
+
+        koef = [
+            [1, mx_i[0], mx_i[1], mx_i[2], mx_i[3], mx_i[4], mx_i[5], mx_i[6], mx_i[7], mx_i[8], mx_i[9]],
+            [mx_i[0], a(1, 1), a(1, 2), a(1, 3), a(1, 4), a(1, 5), a(1, 6), a(1, 7), a(1, 8), a(1, 9), a(1, 10)],
+            [mx_i[1], a(2, 1), a(2, 2), a(2, 3), a(2, 4), a(2, 5), a(2, 6), a(2, 7), a(2, 8), a(2, 9), a(2, 10)],
+            [mx_i[2], a(3, 1), a(3, 2), a(3, 3), a(3, 4), a(3, 5), a(3, 6), a(3, 7), a(3, 8), a(3, 9), a(3, 10)],
+            [mx_i[3], a(4, 1), a(4, 2), a(4, 3), a(4, 4), a(4, 5), a(4, 6), a(4, 7), a(4, 8), a(4, 9), a(4, 10)],
+            [mx_i[4], a(5, 1), a(5, 2), a(5, 3), a(5, 4), a(5, 5), a(5, 6), a(5, 7), a(5, 8), a(5, 9), a(5, 10)],
+            [mx_i[5], a(6, 1), a(6, 2), a(6, 3), a(6, 4), a(6, 5), a(6, 6), a(6, 7), a(6, 8), a(6, 9), a(6, 10)],
+            [mx_i[6], a(7, 1), a(7, 2), a(7, 3), a(7, 4), a(7, 5), a(7, 6), a(7, 7), a(7, 8), a(7, 9), a(7, 10)],
+            [mx_i[7], a(8, 1), a(8, 2), a(8, 3), a(8, 4), a(8, 5), a(8, 6), a(8, 7), a(8, 8), a(8, 9), a(8, 10)],
+            [mx_i[8], a(9, 1), a(9, 2), a(9, 3), a(9, 4), a(9, 5), a(9, 6), a(9, 7), a(9, 8), a(9, 9), a(9, 10)],
+            [mx_i[9], a(10, 1), a(10, 2), a(10, 3), a(10, 4), a(10, 5), a(10, 6), a(10, 7), a(10, 8), a(10, 9), a(10, 10)]
+        ]
+        
+        known = [my, self.find_known(1), self.find_known(2), self.find_known(3), self.find_known(4), self.find_known(5), \
+                self.find_known(6), self.find_known(7), self.find_known(8), self.find_known(9), self.find_known(10)]
+
+        beta = self.solve(koef, known)
+
+        self.dispersion_b2 = sum(dispersion_y) / (n * n * m)
+        self.student_lst = list(self.student_test(beta))
+
+        self.d = 11 - self.student_lst.count(0)
+        self.f4 = self.n - self.d 
+        self.fisher_test()
+
+        return beta
+    
+    def Dop(self):
+        nn = 100
+        t_theoretical = t.ppf(self.q / 2, self.f3)
+        important_b = []
+        not_important_b = []
+        for i in range(nn):
+            betas_lst = self.Result_Without_Print(self.n, self.m, self.f1, self.f2, self.f3, self.q, self.matrix_x)
+            for i in betas_lst:
+                if i < t_theoretical:
+                    not_important_b += [i]
+                else:
+                    important_b += [i]
+            
+        sum_important_b = sum(important_b)
+        sum_not_important_b = sum(not_important_b)
+        correlation = sum_important_b/sum_not_important_b
+        print("Співвідношення суми значимих коефіцієнтів до незначимих: {}".format(correlation))
+        
 if __name__ == '__main__':
     Experiment(15, 3)
